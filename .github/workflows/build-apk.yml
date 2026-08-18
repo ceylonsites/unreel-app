@@ -22,15 +22,17 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Setup Gradle
+      - name: Setup Gradle 8.5
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: "8.5"
 
       - name: Compile Ultra-Light Native APK (<3MB)
         working-directory: android
-        run: gradle assembleRelease --no-daemon
+        run: gradle assembleDebug --no-daemon --stacktrace
 
       - name: Upload Unreel APK (<3MB)
         uses: actions/upload-artifact@v4
         with:
-          name: Unreel-App-Release
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: Unreel-App
+          path: android/app/build/outputs/apk/debug/app-debug.apk
