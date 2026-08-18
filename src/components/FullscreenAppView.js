@@ -29,12 +29,9 @@ function FullscreenAppView({
     const timer = setInterval(() => {
       setSecondsSpent((prev) => {
         const next = prev + 1;
-
-        // Gentle Haptic Pulse at every 15 minutes (900s, 1800s, etc.)
         if (next > 0 && next % 900 === 0) {
-          Vibration.vibrate(400); // 400ms gentle pulse
+          Vibration.vibrate(400);
         }
-
         return next;
       });
 
@@ -46,7 +43,6 @@ function FullscreenAppView({
     return () => clearInterval(timer);
   }, [onTickSecond]);
 
-  // Format seconds into MM:SS
   const formatTime = (totalSeconds) => {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
@@ -55,7 +51,6 @@ function FullscreenAppView({
     return `${formattedMins}:${formattedSecs}`;
   };
 
-  // Hardware Android Back button handler
   useEffect(() => {
     const onBackPress = () => {
       if (canGoBack && webViewRef.current) {
@@ -77,7 +72,7 @@ function FullscreenAppView({
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#121214" />
 
-      {/* Floating Center Exit Pill with Monospace Session Timer & Amber Overtime Alert */}
+      {/* Floating Center Exit Pill with Monospace Session Timer */}
       <View
         style={[styles.topCenterContainer, { top: topOffset + 6 }]}
         pointerEvents="box-none"
@@ -116,7 +111,7 @@ function FullscreenAppView({
         </TouchableOpacity>
       </View>
 
-      {/* High-Performance Hardware Accelerated WebView */}
+      {/* High-Performance Fullscreen WebView with Native Fullscreen Video */}
       <View
         style={[
           styles.webViewContainer,
@@ -140,12 +135,13 @@ function FullscreenAppView({
           injectedJavaScript={injectedScript}
           androidHardwareAccelerationDisabled={false}
           androidLayerType="hardware"
-          onNavigationStateChange={(navState) => {
-            setCanGoBack(navState.canGoBack);
-          }}
+          allowsFullscreenVideo={true}
           allowsInlineMediaPlayback={true}
           mediaPlaybackRequiresUserAction={false}
           overScrollMode="never"
+          onNavigationStateChange={(navState) => {
+            setCanGoBack(navState.canGoBack);
+          }}
         />
       </View>
     </View>
