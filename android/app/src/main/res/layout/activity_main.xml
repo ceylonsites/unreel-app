@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <!-- 1. HOME SCREEN VIEW -->
+    <LinearLayout
+        android:id="@+id/homeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="28dp"
+        android:visibility="VISIBLE">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UNREEL"
+            android:textColor="@color/text_white"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.25"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Total Daily Focus Stat Pill -->
+        <LinearLayout
+            android:id="@+id/statPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pill_bg"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="5dp"
+            android:layout_marginBottom="44dp">
+
+            <TextView
+                android:id="@+id/tvDailyStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODAY • 0m"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"/>
+        </LinearLayout>
+
+        <!-- Button 1: YouTube -->
+        <Button
+            android:id="@+id/btnYoutube"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="YOUTUBE"
+            android:textColor="@color/text_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            android:background="@drawable/btn_bg"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="18dp"/>
+
+        <!-- Button 2: Instagram -->
+        <Button
+            android:id="@+id/btnInstagram"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="INSTAGRAM"
+            android:textColor="@color/text_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            android:background="@drawable/btn_bg"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="18dp"/>
+
+        <!-- Button 3: Facebook -->
+        <Button
+            android:id="@+id/btnFacebook"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="FACEBOOK"
+            android:textColor="@color/text_white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            android:background="@drawable/btn_bg"
+            android:stateListAnimator="@null"/>
+    </LinearLayout>
+
+    <!-- 2. FULLSCREEN WEB VIEW CONTAINER -->
+    <FrameLayout
+        android:id="@+id/webLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="GONE">
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"/>
+
+        <!-- Floating Top Center Portal Pill -->
+        <LinearLayout
+            android:id="@+id/btnPortal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/pill_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="5dp"
+            android:elevation="30dp">
+
+            <ImageView
+                android:id="@+id/ivPortalBack"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_arrow_back"
+                android:layout_marginEnd="6dp"/>
+
+            <TextView
+                android:id="@+id/tvPortalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PORTAL"
+                android:textColor="@color/text_white"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"/>
+
+            <View
+                android:id="@+id/vPortalDot"
+                android:layout_width="3dp"
+                android:layout_height="3dp"
+                android:background="#71717A"
+                android:layout_marginHorizontal="6dp"/>
+
+            <TextView
+                android:id="@+id/tvSessionTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- 3. YOUTUBE FULLSCREEN VIDEO OVERLAY CONTAINER -->
+    <FrameLayout
+        android:id="@+id/fullScreenVideoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:visibility="GONE"/>
+
+</FrameLayout>

@@ -7,23 +7,21 @@ if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir, { recursive: true });
 }
 
-// Function to render the chosen "Slashed Circle / Ø" logo at high resolution with anti-aliasing
-function createLogoPNG(width, height) {
+// Function to render the chosen "U with center dot" logo with smooth anti-aliasing
+function createULogoPNG(width, height) {
   const rowSize = width * 4 + 1;
   const rawData = Buffer.alloc(rowSize * height);
 
   const cx = width / 2;
   const cy = height / 2;
-  const outerR = width * 0.32;
-  const innerR = width * 0.24;
 
-  // Diagonal slash angle ~45 degrees (from bottom-left to top-right)
-  const angle = -Math.PI / 4; // 45 degrees
-  const cosA = Math.cos(angle);
-  const sinA = Math.sin(angle);
-
-  const slashLength = width * 0.96;
-  const maxSlashHalfWidth = width * 0.038;
+  // Proportions scaled to width
+  const stemWidth = width * 0.155;
+  const outerRadius = width * 0.285;
+  const innerRadius = outerRadius - stemWidth;
+  const stemTop = height * 0.20;
+  const bendCenterY = height * 0.50;
+  const dotRadius = width * 0.040;
 
   for (let y = 0; y < height; y++) {
     const rowOffset = y * rowSize;
@@ -33,39 +31,39 @@ function createLogoPNG(width, height) {
       const pxOffset = rowOffset + 1 + x * 4;
 
       const dx = x - cx;
-      const dy = y - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
+      const dy = y - bendCenterY;
+      const distFromBend = Math.sqrt(dx * dx + dy * dy);
 
-      // 1. Ring calculation
-      let inRing = 0;
-      if (dist >= innerR && dist <= outerR) {
-        // Anti-alias edges
-        const edge1 = Math.min(1, Math.max(0, dist - innerR));
-        const edge2 = Math.min(1, Math.max(0, outerR - dist));
-        inRing = Math.min(edge1, edge2);
+      let inU = 0;
+
+      // 1. Top vertical stems (above bend center)
+      if (y >= stemTop && y <= bendCenterY) {
+        const inLeftStem = (x >= cx - outerRadius && x <= cx - innerRadius);
+        const inRightStem = (x >= cx + innerRadius && x <= cx + outerRadius);
+        if (inLeftStem || inRightStem) {
+          inU = 1.0;
+        }
       }
-
-      // 2. Tapered Diagonal Slash calculation
-      // Rotate coordinates along slash axis
-      const u = dx * cosA + dy * sinA; // along slash
-      const v = -dx * sinA + dy * cosA; // perpendicular to slash
-
-      let inSlash = 0;
-      if (Math.abs(u) <= slashLength / 2) {
-        // Slash thickness tapers from center to sharp needle points
-        const taper = 1 - Math.pow(Math.abs(u) / (slashLength / 2), 1.5);
-        const currentHalfWidth = maxSlashHalfWidth * Math.max(0, taper);
-        const distFromCenterline = Math.abs(v);
-
-        if (distFromCenterline <= currentHalfWidth) {
-          inSlash = Math.min(1, Math.max(0, (currentHalfWidth - distFromCenterline) + 0.5));
+      // 2. Bottom rounded U bend (below bend center)
+      else if (y > bendCenterY) {
+        if (distFromBend >= innerRadius && distFromBend <= outerRadius) {
+          const edgeInner = Math.min(1, Math.max(0, distFromBend - innerRadius));
+          const edgeOuter = Math.min(1, Math.max(0, outerRadius - distFromBend));
+          inU = Math.min(edgeInner, edgeOuter);
         }
       }
 
-      const coverage = Math.min(1, Math.max(inRing, inSlash));
+      // 3. Center Focal Dot
+      const distFromCenter = Math.sqrt((x - cx) * (x - cx) + (y - (bendCenterY + dotRadius * 0.2)) * (y - (bendCenterY + dotRadius * 0.2)));
+      let inDot = 0;
+      if (distFromCenter <= dotRadius) {
+        inDot = Math.min(1, Math.max(0, (dotRadius - distFromCenter) + 0.5));
+      }
 
-      // Background color: #121214 (18, 18, 20)
-      // Foreground color: #FFFFFF (255, 255, 255)
+      const coverage = Math.min(1, Math.max(inU, inDot));
+
+      // Background: #121214 (18, 18, 20)
+      // Foreground: #FFFFFF (255, 255, 255)
       const r = Math.round(18 + (255 - 18) * coverage);
       const g = Math.round(18 + (255 - 18) * coverage);
       const b = Math.round(20 + (255 - 20) * coverage);
@@ -119,13 +117,12 @@ function createLogoPNG(width, height) {
   return Buffer.concat([signature, ihdrChunk, idatChunk, iendChunk]);
 }
 
-// Generate the 1024x1024 icons and splash assets
-const iconBuffer = createLogoPNG(1024, 1024);
-const faviconBuffer = createLogoPNG(128, 128);
+const iconBuffer = createULogoPNG(1024, 1024);
+const faviconBuffer = createULogoPNG(128, 128);
 
 fs.writeFileSync(path.join(assetsDir, 'icon.png'), iconBuffer);
 fs.writeFileSync(path.join(assetsDir, 'adaptive-icon.png'), iconBuffer);
 fs.writeFileSync(path.join(assetsDir, 'splash.png'), iconBuffer);
 fs.writeFileSync(path.join(assetsDir, 'favicon.png'), faviconBuffer);
 
-console.log('✅ Generated official Unreel logo assets into /assets directory!');
+console.log('✅ Generated official Unreel "U with Dot" logo assets into /assets');
