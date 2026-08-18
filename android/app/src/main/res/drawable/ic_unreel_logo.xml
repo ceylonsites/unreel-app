@@ -3,13 +3,19 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+  
+  <!-- Solid Background -->
   <path
       android:fillColor="#121214"
       android:pathData="M0,0 L108,0 L108,108 L0,108 Z"/>
+
+  <!-- Bold Architectural 'U' Monogram -->
   <path
       android:fillColor="#FFFFFFFF"
       android:pathData="M24,22 L40,22 L40,54 C40,61.73 46.27,68 54,68 C61.73,68 68,61.73 68,54 L68,22 L84,22 L84,54 C84,70.57 70.57,84 54,84 C37.43,84 24,70.57 24,54 Z"/>
+
+  <!-- Center Focal Dot using Cubic Beziers for 100% universal compiler support -->
   <path
       android:fillColor="#FFFFFFFF"
-      android:pathData="M50,54 A4,4 0 1,0 58,54 A4,4 0 1,0 50,54 Z"/>
+      android:pathData="M54,50 C56.21,50 58,51.79 58,54 C58,56.21 56.21,58 54,58 C51.79,58 50,56.21 50,54 C50,51.79 51.79,50 54,50 Z"/>
 </vector>

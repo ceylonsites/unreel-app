@@ -1,9 +1,9 @@
 package com.focus.unreel
 
+import com.focus.unreel.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -13,19 +13,18 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,9 +38,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
 
     private lateinit var tvDailyStat: TextView
-    private lateinit var btnYoutube: Button
-    private lateinit var btnInstagram: Button
-    private lateinit var btnFacebook: Button
+    private lateinit var btnYoutube: AppCompatButton
+    private lateinit var btnInstagram: AppCompatButton
+    private lateinit var btnFacebook: AppCompatButton
 
     private lateinit var btnPortal: LinearLayout
     private lateinit var ivPortalBack: ImageView
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     private var sessionSeconds = 0
     private var totalDailySeconds = 0
-    private val handler = Looper.myLooper()?.let { Handler(it) } ?: Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
 
     private var customVideoView: View? = null
     private var customVideoCallback: WebChromeClient.CustomViewCallback? = null
@@ -64,13 +63,9 @@ class MainActivity : AppCompatActivity() {
                 sessionSeconds++
                 totalDailySeconds++
 
-                // Save to persistent preferences
                 saveDailySeconds(totalDailySeconds)
-
-                // Update session timer UI
                 updateSessionTimerUI(sessionSeconds)
 
-                // Gentle 15-Minute Haptic Pulse
                 if (sessionSeconds > 0 && sessionSeconds % 900 == 0) {
                     triggerHapticPulse()
                 }
@@ -91,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         setupListeners()
         setupBackHandler()
 
-        // Restore persistent today's time
         totalDailySeconds = loadDailySeconds()
         updateDailyStatUI(totalDailySeconds)
     }
@@ -128,10 +122,8 @@ class MainActivity : AppCompatActivity() {
         settings.builtInZoomControls = false
         settings.displayZoomControls = false
 
-        // Enable hardware layer
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-        // Cookie Manager for persistent login
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(webView, true)
@@ -143,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Fix: Enable YouTube Fullscreen Video Support!
+        // Fullscreen YouTube Video Support
         webView.webChromeClient = object : WebChromeClient() {
             override fun onShowCustomView(view: View?, callback: CustomViewCallback?) {
                 if (customVideoView != null) {
@@ -164,7 +156,6 @@ class MainActivity : AppCompatActivity() {
                 fullScreenVideoContainer.visibility = View.VISIBLE
                 webLayout.visibility = View.GONE
 
-                // Set immersive fullscreen flags
                 hideSystemUI()
             }
 
@@ -194,7 +185,6 @@ class MainActivity : AppCompatActivity() {
     private fun setupBackHandler() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // If custom fullscreen video is open, close video fullscreen first
                 if (customVideoView != null) {
                     webView.webChromeClient?.onHideCustomView()
                     return
@@ -229,7 +219,6 @@ class MainActivity : AppCompatActivity() {
     private fun closeAppToHome() {
         handler.removeCallbacks(sessionTimerRunnable)
 
-        // Save daily seconds
         saveDailySeconds(totalDailySeconds)
         updateDailyStatUI(totalDailySeconds)
 
@@ -243,7 +232,6 @@ class MainActivity : AppCompatActivity() {
 
         val css = when {
             url.contains("youtube.com") -> """
-                /* Hide YouTube Shorts buttons & shelves */
                 ytm-pivot-bar-renderer > ytm-pivot-bar-item-renderer:nth-child(2),
                 ytm-pivot-bar-renderer > *:nth-child(2),
                 ytm-pivot-bar-item-renderer[aria-label*="Shorts"],
@@ -270,7 +258,6 @@ class MainActivity : AppCompatActivity() {
             """.trimIndent()
 
             url.contains("instagram.com") -> """
-                /* Hide Instagram Reels tab & trays */
                 a[href*="/reels/"],
                 a[href="/reels/"],
                 svg[aria-label="Reels"],
@@ -282,7 +269,6 @@ class MainActivity : AppCompatActivity() {
             """.trimIndent()
 
             url.contains("facebook.com") -> """
-                /* Hide Facebook Reels tabs, trays & Open App banners */
                 div[role="tablist"] div[role="tab"]:nth-child(2),
                 div[aria-label*="Reels"],
                 div[aria-label*="reels"],
